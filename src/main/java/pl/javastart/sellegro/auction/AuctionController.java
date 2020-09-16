@@ -16,19 +16,19 @@ public class AuctionController {
         this.auctionService = auctionService;
     }
 
-    @GetMapping("/auctions")
-    public String auctions(Model model,
-                           @RequestParam(required = false) String sort,
-                           AuctionFilters auctionFilters) {
-        List<Auction> auctions;
-        if(sort != null) {
-            auctions = auctionService.findAllSorted(sort);
-        } else {
-            auctions = auctionService.findAllForFilters(auctionFilters);
-        }
-
-        model.addAttribute("cars", auctions);
-        model.addAttribute("filters", auctionFilters);
-        return "auctions";
-    }
+//    @GetMapping("/auctions")
+//    public String auctions(Model model,
+//                           @RequestParam(required = false) String sort,
+//                           AuctionFilters auctionFilters) {
+//        List<Auction> auctions;
+//        if(sort != null) {
+//            auctions = auctionService.findAllSorted(sort);
+//        } else {
+//            auctions = auctionService.findAllForFilters(auctionFilters);
+//        }
+//
+//        model.addAttribute("cars", auctions);
+//        model.addAttribute("filters", auctionFilters);
+//        return "auctions";
+//    }
 }
