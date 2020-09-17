@@ -29,6 +29,7 @@ public class AuctionService {
         this.auctionRepository = auctionRepository;
         try {
             loadData();
+            updateAuctionsWithTitle();
         } catch (IOException e) {
             System.out.println("Error loading data: " + e.getMessage());
             e.printStackTrace();
@@ -64,16 +65,13 @@ public class AuctionService {
         return auctionRepository.findAllForFilters(column, filter);
     }
 
-//    public List<Auction> findAllSorted(String sort) {
-//        Comparator<Auction> comparator = Comparator.comparing(Auction::getTitle);
-//        if(sort.equals("title")) {
-//            comparator = Comparator.comparing(Auction::getTitle);
-//        } else if(sort.equals("price")) {
-//            comparator = Comparator.comparing(Auction::getPrice);
-//        }
-//
-//        return auctions.stream()
-//                .sorted(comparator)
-//                .collect(Collectors.toList());
-//    }
+    public List<Auction> findAllSorted(String column) {
+        return auctionRepository.findAllSorted(column);
+    }
+
+    public void updateAuctionsWithTitle(){
+        for (Auction auction : auctions) {
+            auctionRepository.updateAuctionsWithTitle(auction.getTitle(), auction.getId());
+        }
+    }
 }
