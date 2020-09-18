@@ -18,14 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class AuctionService {
 
+    private AuctionRepository auctionRepository;
+
     private List<Auction> auctions;
 
     private static final String[] ADJECTIVES = {"Niesamowity", "Jedyny taki", "IGŁA", "HIT", "Jak nowy",
             "Perełka", "OKAZJA", "Wyjątkowy"};
 
-    public AuctionService() {
+    public AuctionService(AuctionRepository auctionRepository) {
+        this.auctionRepository = auctionRepository;
         try {
             loadData();
+            updateAuctionsWithTitle();
         } catch (IOException e) {
             System.out.println("Error loading data: " + e.getMessage());
             e.printStackTrace();
@@ -54,28 +58,20 @@ public class AuctionService {
     }
 
     public List<Auction> find4MostExpensive() {
-        return auctions.stream()
-                .sorted(Comparator.comparing(Auction::getPrice).reversed())
-                .limit(4)
-                .collect(Collectors.toList());
+        return auctionRepository.find4MostExpensive();
     }
 
-    public List<Auction> findAllForFilters(AuctionFilters auctionFilters) {
-        return auctions.stream()
-                .filter(auction -> auctionFilters.getTitle() == null || auction.getTitle().toUpperCase().contains(auctionFilters.getTitle().toUpperCase()))
-                .collect(Collectors.toList());
+    public List<Auction> findAllForFilters(String column, String filter) {
+        return auctionRepository.findAllForFilters(column, filter);
     }
 
-    public List<Auction> findAllSorted(String sort) {
-        Comparator<Auction> comparator = Comparator.comparing(Auction::getTitle);
-        if(sort.equals("title")) {
-            comparator = Comparator.comparing(Auction::getTitle);
-        } else if(sort.equals("price")) {
-            comparator = Comparator.comparing(Auction::getPrice);
+    public List<Auction> findAllSorted(String column) {
+        return auctionRepository.findAllSorted(column);
+    }
+
+    public void updateAuctionsWithTitle(){
+        for (Auction auction : auctions) {
+            auctionRepository.updateAuctionsWithTitle(auction.getTitle(), auction.getId());
         }
-
-        return auctions.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
     }
 }
